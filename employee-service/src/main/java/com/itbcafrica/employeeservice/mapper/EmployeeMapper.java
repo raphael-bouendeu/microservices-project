@@ -13,5 +13,6 @@ public interface EmployeeMapper {
     EmployeeDto mapToDto(Employee employee);
 
     @Mapping(target = "departmentCode", source = "employeeDto.departmentCode")
+    @Mapping(target = "organizationCode", source = "employeeDto.organizationCode")
     Employee mapToEntity(EmployeeDto employeeDto);
 }

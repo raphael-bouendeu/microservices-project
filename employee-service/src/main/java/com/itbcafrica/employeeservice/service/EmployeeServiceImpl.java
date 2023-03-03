@@ -3,6 +3,7 @@ package com.itbcafrica.employeeservice.service;
 import com.itbcafrica.employeeservice.dto.APIResponseDto;
 import com.itbcafrica.employeeservice.dto.DepartmentDto;
 import com.itbcafrica.employeeservice.dto.EmployeeDto;
+import com.itbcafrica.employeeservice.dto.OrganizationDto;
 import com.itbcafrica.employeeservice.entity.Employee;
 import com.itbcafrica.employeeservice.mapper.EmployeeMapper;
 import com.itbcafrica.employeeservice.repository.EmployeeRepository;
@@ -18,13 +19,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeRepository employeeRepository;
     private RestTemplate restTemplate;
     private WebClient webClient;
-
+    private APIForOrganizationClient apiForOrganizationClient;
     private APIClient apiClient;
 
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository, RestTemplate restTemplate, WebClient webClient, APIClient apiClient) {
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository, RestTemplate restTemplate, WebClient webClient, APIForOrganizationClient apiForOrganizationClient, APIClient apiClient) {
         this.employeeRepository = employeeRepository;
         this.restTemplate = restTemplate;
         this.webClient = webClient;
+        this.apiForOrganizationClient = apiForOrganizationClient;
         this.apiClient = apiClient;
     }
 
@@ -47,8 +49,10 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .bodyToMono(DepartmentDto.class)
                 .block();*/
         DepartmentDto departmentDto = apiClient.getDepartmentByCode(employee.get().getDepartmentCode());
+        OrganizationDto organizationDto = apiForOrganizationClient.getOrganizationByCode(employee.get().getOrganizationCode());
         APIResponseDto apiResponseDto = new APIResponseDto();
         apiResponseDto.setDepartmentDto(departmentDto);
+        apiResponseDto.setOrganizationDto(organizationDto);
         apiResponseDto.setEmployeeDto(EmployeeMapper.MAPPER.mapToDto(employee.get()));
         return apiResponseDto;
     }
